@@ -77,11 +77,9 @@ export default function NotificationsPage() {
       key={n._id}
       style={{
         display: 'flex', alignItems: 'center', gap: 12,
-        padding: '12px 14px', marginBottom: 6, borderRadius: 16,
-        backgroundColor: hoveredNotif === n._id ? '#fff' : '#fafafa',
-        boxShadow: hoveredNotif === n._id ? '0 4px 14px rgba(0,0,0,0.07)' : 'none',
-        border: '1px solid ' + (hoveredNotif === n._id ? '#f2f2f2' : 'transparent'),
-        position: 'relative', transition: 'all 0.15s',
+        padding: '10px 16px',
+        backgroundColor: hoveredNotif === n._id ? '#f5f5f5' : 'transparent',
+        position: 'relative',
       }}
       onMouseEnter={() => setHoveredNotif(n._id)}
       onMouseLeave={() => setHoveredNotif(null)}
@@ -101,7 +99,7 @@ export default function NotificationsPage() {
           {n.type === 'mention' && 'mentioned you in a comment.'}
           {n.type === 'reply' && 'replied to your comment.'}
           {' '}
-          <span style={{ color: '#8e8e8e', fontSize: 12 }}>
+          <span style={{ color: '#737373', fontSize: 12 }}>
             <TimeAgo date={n.createdAt} />
           </span>
         </p>
@@ -109,15 +107,15 @@ export default function NotificationsPage() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
         {n.post && (
-          <img src={n.post.media[0]?.url} alt="post" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 10 }} />
+          <img src={n.post.media[0]?.url} alt="post" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 4 }} />
         )}
         {n.type === 'follow' && (
           <button
             onClick={() => handleFollow(n.actor._id)}
             style={{
-              background: following[n.actor._id] ? '#efefef' : 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)',
-              color: following[n.actor._id] ? '#000' : '#fff', border: 'none', borderRadius: 999,
-              padding: '7px 16px', fontSize: 13, fontWeight: 700,
+              backgroundColor: following[n.actor._id] ? '#efefef' : '#0095f6',
+              color: following[n.actor._id] ? '#000' : '#fff', border: 'none', borderRadius: 8,
+              padding: '7px 16px', fontSize: 14, fontWeight: 600,
               cursor: 'pointer', whiteSpace: 'nowrap',
             }}
           >
@@ -127,12 +125,9 @@ export default function NotificationsPage() {
         {hoveredNotif === n._id && (
           <button
             onClick={() => handleDelete(n._id)}
-            style={{
-              background: '#fff', border: '1px solid #eee', borderRadius: '50%', width: 26, height: 26,
-              cursor: 'pointer', color: '#8e8e8e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
-            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#737373', display: 'flex', padding: 4 }}
           >
-            <X size={13} />
+            <X size={16} />
           </button>
         )}
       </div>
@@ -144,25 +139,24 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div style={{ maxWidth: 640, margin: '0 auto', padding: '20px 16px 40px' }}>
+    <div style={{ maxWidth: 600, margin: '0 auto', paddingTop: 8, paddingBottom: 40 }}>
       {/* Header */}
-      <div style={{ padding: '0 4px 14px' }}>
-        <h1 style={{ color: '#000', fontSize: 22, fontWeight: 800, margin: 0 }}>Notifications</h1>
+      <div style={{ padding: '12px 16px 8px' }}>
+        <h1 style={{ color: '#000', fontSize: 20, fontWeight: 700, margin: 0 }}>Notifications</h1>
       </div>
 
       {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: 8, padding: '0 4px 16px', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', gap: 8, padding: '8px 16px 12px', overflowX: 'auto' }}>
         {tabs.map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             style={{
-              flexShrink: 0, padding: '7px 16px', borderRadius: 999, fontSize: 13.5, fontWeight: 600,
-              background: activeTab === tab ? 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)' : '#fff',
+              flexShrink: 0, padding: '6px 16px', borderRadius: 20, fontSize: 14, fontWeight: 500,
+              backgroundColor: activeTab === tab ? '#000' : 'transparent',
               color: activeTab === tab ? '#fff' : '#000',
-              border: `1px solid ${activeTab === tab ? 'transparent' : '#ececec'}`,
+              border: `1px solid ${activeTab === tab ? '#000' : '#dbdbdb'}`,
               cursor: 'pointer',
-              boxShadow: activeTab === tab ? '0 4px 12px rgba(220,39,67,0.28)' : 'none',
             }}
           >
             {tab}
@@ -171,36 +165,30 @@ export default function NotificationsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0', color: '#8e8e8e',
-          backgroundColor: '#fff', borderRadius: 22, border: '1px solid #f2f2f2',
-        }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0', color: '#737373' }}>
           <p style={{ fontSize: 14 }}>No notifications yet</p>
         </div>
       ) : (
-        <div style={{
-          backgroundColor: '#fff', borderRadius: 22, border: '1px solid #f2f2f2',
-          boxShadow: '0 4px 18px rgba(0,0,0,0.05)', padding: 12,
-        }}>
+        <>
           {thisWeek.length > 0 && (
             <section>
-              <h2 style={{ color: '#8e8e8e', fontWeight: 700, fontSize: 12, letterSpacing: 0.5, textTransform: 'uppercase', padding: '6px 6px 8px', margin: 0 }}>This week</h2>
+              <h2 style={{ color: '#000', fontWeight: 600, fontSize: 15, padding: '8px 16px 4px', margin: 0 }}>This week</h2>
               {thisWeek.map(renderNotif)}
             </section>
           )}
           {thisMonth.length > 0 && (
             <section style={{ marginTop: 8 }}>
-              <h2 style={{ color: '#8e8e8e', fontWeight: 700, fontSize: 12, letterSpacing: 0.5, textTransform: 'uppercase', padding: '6px 6px 8px', margin: 0 }}>This month</h2>
+              <h2 style={{ color: '#000', fontWeight: 600, fontSize: 15, padding: '8px 16px 4px', margin: 0 }}>This month</h2>
               {thisMonth.map(renderNotif)}
             </section>
           )}
           {earlier.length > 0 && (
             <section style={{ marginTop: 8 }}>
-              <h2 style={{ color: '#8e8e8e', fontWeight: 700, fontSize: 12, letterSpacing: 0.5, textTransform: 'uppercase', padding: '6px 6px 8px', margin: 0 }}>Earlier</h2>
+              <h2 style={{ color: '#000', fontWeight: 600, fontSize: 15, padding: '8px 16px 4px', margin: 0 }}>Earlier</h2>
               {earlier.map(renderNotif)}
             </section>
           )}
-        </div>
+        </>
       )}
     </div>
   );

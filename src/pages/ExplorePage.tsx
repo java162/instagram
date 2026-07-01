@@ -63,11 +63,11 @@ export default function ExplorePage() {
   const showDropdown = inputFocused && query && (searchLoading || searchResults.length > 0);
 
   return (
-    <div style={{ maxWidth: 960, margin: '0 auto', padding: '20px 16px 40px' }}>
+    <div style={{ maxWidth: 935, margin: '0 auto', padding: '12px 0 40px' }}>
       {/* Search bar */}
-      <div style={{ padding: '0 0 16px', position: 'relative' }}>
+      <div style={{ padding: '4px 16px 12px', position: 'relative' }}>
         <div style={{ position: 'relative' }}>
-          <Search size={15} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: '#8e8e8e', pointerEvents: 'none' }} />
+          <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#737373', pointerEvents: 'none' }} />
           <input
             value={query}
             onChange={e => handleSearch(e.target.value)}
@@ -75,17 +75,16 @@ export default function ExplorePage() {
             onBlur={() => setTimeout(() => setInputFocused(false), 200)}
             placeholder="Search"
             style={{
-              width: '100%', backgroundColor: '#fff', border: '1px solid #ececec',
-              borderRadius: 999, paddingLeft: 40, paddingRight: query ? 40 : 16,
-              paddingTop: 11, paddingBottom: 11,
+              width: '100%', backgroundColor: '#efefef', border: 'none',
+              borderRadius: 10, paddingLeft: 36, paddingRight: query ? 36 : 14,
+              paddingTop: 9, paddingBottom: 9,
               color: '#000', fontSize: 14, outline: 'none', boxSizing: 'border-box',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
             }}
           />
           {query && (
             <button
               onClick={() => { setQuery(''); setSearchResults([]); }}
-              style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#8e8e8e', display: 'flex', padding: 0 }}
+              style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#737373', display: 'flex', padding: 0 }}
             >
               <X size={16} />
             </button>
@@ -94,7 +93,7 @@ export default function ExplorePage() {
 
         {/* Search dropdown */}
         {showDropdown && (
-          <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0, backgroundColor: '#fff', border: '1px solid #f0f0f0', borderRadius: 18, boxShadow: '0 12px 30px rgba(0,0,0,0.14)', zIndex: 30, overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '100%', left: 16, right: 16, backgroundColor: '#fff', border: '1px solid #dbdbdb', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.15)', zIndex: 30, overflow: 'hidden' }}>
             {searchLoading ? (
               <div style={{ display: 'flex', justifyContent: 'center', padding: 16 }}><Spinner size="sm" /></div>
             ) : searchResults.length === 0 ? (
@@ -121,7 +120,7 @@ export default function ExplorePage() {
       </div>
 
       {/* Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, padding: '0 0' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 3, padding: '0 0' }}>
         {posts.map((post, idx) => {
           const isLarge = idx % 7 === 0;
           return (
@@ -129,8 +128,7 @@ export default function ExplorePage() {
               key={post._id}
               style={{
                 position: 'relative', backgroundColor: '#efefef', cursor: 'pointer',
-                overflow: 'hidden', aspectRatio: '1', borderRadius: 18,
-                boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+                overflow: 'hidden', aspectRatio: '1',
                 gridColumn: isLarge ? 'span 2' : undefined,
                 gridRow: isLarge ? 'span 2' : undefined,
               }}
@@ -180,7 +178,7 @@ export default function ExplorePage() {
           >
             <X size={28} />
           </button>
-          <div style={{ width: '100%', maxWidth: 470, maxHeight: '90vh', overflowY: 'auto', borderRadius: 24 }} onClick={e => e.stopPropagation()}>
+          <div style={{ width: '100%', maxWidth: 470, maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
             <PostCard
               post={selectedPost}
               onDelete={id => { setPosts(ps => ps.filter(p => p._id !== id)); setSelectedPost(null); }}

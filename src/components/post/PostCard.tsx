@@ -90,15 +90,9 @@ export default function PostCard({ post: initialPost, onDelete }: PostCardProps)
   };
 
   return (
-    <article
-      style={{
-        backgroundColor: '#fff', borderRadius: 24, overflow: 'hidden',
-        boxShadow: '0 4px 18px rgba(0,0,0,0.06)', border: '1px solid #f2f2f2',
-        marginBottom: 20,
-      }}
-    >
+    <article className="border-b border-gray-200 pb-4 mb-2">
       {/* Header */}
-      <div className="flex items-center justify-between" style={{ padding: '14px 16px' }}>
+      <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate(`/${post.author.username}`)}>
           <Avatar src={post.author.avatar} alt={post.author.username} size="sm" hasStory hasUnviewed />
           <div>
@@ -107,18 +101,11 @@ export default function PostCard({ post: initialPost, onDelete }: PostCardProps)
           </div>
         </div>
         <div className="relative">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            style={{
-              background: '#f7f7f7', border: 'none', borderRadius: '50%',
-              width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', color: '#000',
-            }}
-          >
-            <MoreHorizontal size={17} />
+          <button onClick={() => setShowMenu(!showMenu)} className="text-black p-1">
+            <MoreHorizontal size={20} />
           </button>
           {showMenu && (
-            <div className="absolute right-0 top-9 bg-white border border-gray-100 shadow-xl z-20 min-w-[190px] overflow-hidden" style={{ borderRadius: 16, boxShadow: '0 12px 30px rgba(0,0,0,0.14)' }}>
+            <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-xl shadow-xl z-20 min-w-[180px] overflow-hidden">
               {isOwner && (
                 <button onClick={handleDelete} className="w-full text-left px-4 py-3 text-red-500 text-sm hover:bg-gray-100">
                   Delete post
@@ -139,7 +126,7 @@ export default function PostCard({ post: initialPost, onDelete }: PostCardProps)
       </div>
 
       {/* Media */}
-      <div className="relative bg-black select-none" style={{ aspectRatio: '1 / 1', margin: '0 10px', borderRadius: 18, overflow: 'hidden' }}>
+      <div className="relative bg-black select-none" style={{ aspectRatio: '1 / 1' }}>
         <div onClick={handleDoubleTap} className="w-full h-full">
           {currentMedia?.type === 'video' ? (
             <div className="relative w-full h-full">
@@ -203,58 +190,28 @@ export default function PostCard({ post: initialPost, onDelete }: PostCardProps)
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between" style={{ padding: '12px 16px 0' }}>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleLike}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 38, height: 38, borderRadius: '50%', border: 'none', cursor: 'pointer',
-              backgroundColor: post.isLiked ? 'rgba(237,73,86,0.1)' : '#f7f7f7',
-              transition: 'transform 0.1s, background-color 0.15s',
-            }}
-            className="active:scale-90"
-          >
+      <div className="flex items-center justify-between px-4 pt-3">
+        <div className="flex items-center gap-4">
+          <button onClick={handleLike} className="transition-transform active:scale-90">
             <Heart
-              size={20}
+              size={24}
               className={post.isLiked ? 'fill-red-500 text-red-500' : 'text-black'}
             />
           </button>
-          <button
-            onClick={() => setShowComments(true)}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 38, height: 38, borderRadius: '50%', border: 'none', cursor: 'pointer',
-              backgroundColor: '#f7f7f7',
-            }}
-          >
-            <MessageCircle size={20} className="text-black" />
+          <button onClick={() => setShowComments(true)}>
+            <MessageCircle size={24} className="text-black" />
           </button>
-          <button
-            onClick={handleShare}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 38, height: 38, borderRadius: '50%', border: 'none', cursor: 'pointer',
-              backgroundColor: '#f7f7f7',
-            }}
-          >
-            <Send size={20} className="text-black" />
+          <button onClick={handleShare}>
+            <Send size={24} className="text-black" />
           </button>
         </div>
-        <button
-          onClick={handleSave}
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            width: 38, height: 38, borderRadius: '50%', border: 'none', cursor: 'pointer',
-            backgroundColor: post.isSaved ? '#f0f0f0' : '#f7f7f7',
-          }}
-        >
-          <Bookmark size={20} className={post.isSaved ? 'fill-black text-black' : 'text-black'} />
+        <button onClick={handleSave}>
+          <Bookmark size={24} className={post.isSaved ? 'fill-black text-black' : 'text-black'} />
         </button>
       </div>
 
       {/* Likes */}
-      <div style={{ padding: '10px 16px 0' }}>
+      <div className="px-4 mt-2">
         {post.likesCount > 0 && (
           <p className="text-black text-sm font-semibold">{formatCount(post.likesCount)} likes</p>
         )}
@@ -262,7 +219,7 @@ export default function PostCard({ post: initialPost, onDelete }: PostCardProps)
 
       {/* Caption */}
       {post.caption && (
-        <div style={{ padding: '4px 16px 0' }}>
+        <div className="px-4 mt-1">
           <p className="text-black text-sm">
             <Link to={`/${post.author.username}`} className="font-semibold mr-1">{post.author.username}</Link>
             <CaptionText text={post.caption} />
@@ -274,15 +231,14 @@ export default function PostCard({ post: initialPost, onDelete }: PostCardProps)
       {post.commentsCount > 0 && (
         <button
           onClick={() => setShowComments(true)}
-          className="text-gray-500 text-sm hover:text-gray-700"
-          style={{ padding: '6px 16px 0', display: 'block' }}
+          className="px-4 mt-1 text-gray-500 text-sm hover:text-gray-700"
         >
           View all {post.commentsCount} comments
         </button>
       )}
 
       {/* Time */}
-      <div style={{ padding: '6px 16px 16px' }}>
+      <div className="px-4 mt-1">
         <TimeAgo date={post.createdAt} />
       </div>
 

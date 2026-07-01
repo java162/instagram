@@ -103,31 +103,20 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   return (
-    <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px 16px 40px' }}>
+    <div style={{ maxWidth: 935, margin: '0 auto', padding: '30px 20px 40px' }}>
       {/* Profile header */}
-      <div style={{
-        display: 'flex', alignItems: 'flex-start', gap: 36, marginBottom: 20,
-        backgroundColor: '#fff', borderRadius: 26, border: '1px solid #f2f2f2',
-        boxShadow: '0 4px 18px rgba(0,0,0,0.05)', padding: '28px 32px',
-      }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 40, marginBottom: 28 }}>
         {/* Avatar */}
         <div style={{ position: 'relative', flexShrink: 0 }}>
-          <div style={{
-            borderRadius: '50%', padding: 3,
-            background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
-          }}>
-            <div style={{ borderRadius: '50%', padding: 3, background: '#fff' }}>
-              <Avatar src={profile.avatar} alt={profile.username} size="xl" />
-            </div>
-          </div>
+          <Avatar src={profile.avatar} alt={profile.username} size="xl" />
           {isOwn && (
             <button
               onClick={() => setShowEditModal(true)}
               style={{
                 position: 'absolute', bottom: 2, right: 2,
-                background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)', border: '2px solid #fff',
-                borderRadius: '50%', padding: 6, cursor: 'pointer',
-                display: 'flex', color: '#fff', boxShadow: '0 2px 8px rgba(220,39,67,0.4)',
+                background: '#efefef', border: '2px solid #fff',
+                borderRadius: '50%', padding: 5, cursor: 'pointer',
+                display: 'flex', color: '#000',
               }}
             >
               <Camera size={12} />
@@ -138,7 +127,7 @@ export default function ProfilePage() {
         <div style={{ flex: 1, minWidth: 0 }}>
           {/* Username + buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
-            <h1 style={{ color: '#000', fontSize: 21, fontWeight: 700, margin: 0 }}>{profile.username}</h1>
+            <h1 style={{ color: '#000', fontSize: 20, fontWeight: 300, margin: 0 }}>{profile.username}</h1>
             {profile.isVerified && (
               <svg viewBox="0 0 40 40" width={18} height={18} fill="#3b82f6">
                 <path d="M19.998 3.094L14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v6.354h6.234L14.638 40l5.36-3.094L25.358 40l2.972-5.15h6.234v-6.354L40 25.359 36.906 20 40 14.641l-5.432-3.137V4.95h-6.234z"/>
@@ -147,27 +136,19 @@ export default function ProfilePage() {
 
             {isOwn ? (
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={() => setShowEditModal(true)} style={{ backgroundColor: '#f7f7f7', color: '#000', border: 'none', padding: '8px 18px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                <button onClick={() => setShowEditModal(true)} style={{ backgroundColor: '#efefef', color: '#000', border: 'none', padding: '7px 16px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                   Edit profile
                 </button>
-                <button style={{ backgroundColor: '#f7f7f7', color: '#000', border: 'none', padding: '8px 18px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                <button style={{ backgroundColor: '#efefef', color: '#000', border: 'none', padding: '7px 16px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                   View archive
                 </button>
               </div>
             ) : (
               <div style={{ display: 'flex', gap: 8 }}>
-                <button
-                  onClick={handleFollow}
-                  style={{
-                    background: following ? '#f7f7f7' : 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)',
-                    color: following ? '#000' : '#fff', border: 'none', padding: '8px 22px', borderRadius: 999,
-                    fontSize: 14, fontWeight: 700, cursor: 'pointer',
-                    boxShadow: following ? 'none' : '0 4px 14px rgba(220,39,67,0.3)',
-                  }}
-                >
+                <button onClick={handleFollow} style={{ backgroundColor: following ? '#efefef' : '#0095f6', color: following ? '#000' : '#fff', border: 'none', padding: '7px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                   {following ? 'Following' : 'Follow'}
                 </button>
-                <button onClick={() => navigate('/messages', { state: { userId: profile._id } })} style={{ backgroundColor: '#f7f7f7', color: '#000', border: 'none', padding: '8px 22px', borderRadius: 999, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                <button onClick={() => navigate('/messages', { state: { userId: profile._id } })} style={{ backgroundColor: '#efefef', color: '#000', border: 'none', padding: '7px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
                   Message
                 </button>
               </div>
@@ -175,18 +156,18 @@ export default function ProfilePage() {
           </div>
 
           {/* Stats */}
-          <div style={{ display: 'flex', gap: 12, marginBottom: 18 }}>
-            <div style={{ backgroundColor: '#fafafa', borderRadius: 14, padding: '8px 16px' }}>
+          <div style={{ display: 'flex', gap: 40, marginBottom: 16 }}>
+            <div>
               <span style={{ color: '#000', fontWeight: 700 }}>{profile.postsCount ?? posts.length}</span>
-              <span style={{ color: '#8e8e8e', fontSize: 14 }}> posts</span>
+              <span style={{ color: '#000', fontSize: 14 }}> posts</span>
             </div>
-            <button onClick={() => setShowFollowersModal(true)} style={{ background: '#fafafa', borderRadius: 14, padding: '8px 16px', border: 'none', cursor: 'pointer', color: 'inherit' }}>
+            <button onClick={() => setShowFollowersModal(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit' }}>
               <span style={{ color: '#000', fontWeight: 700 }}>{getFollowersCount(profile)}</span>
-              <span style={{ color: '#8e8e8e', fontSize: 14 }}> followers</span>
+              <span style={{ color: '#000', fontSize: 14 }}> followers</span>
             </button>
-            <button onClick={() => setShowFollowingModal(true)} style={{ background: '#fafafa', borderRadius: 14, padding: '8px 16px', border: 'none', cursor: 'pointer' }}>
+            <button onClick={() => setShowFollowingModal(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
               <span style={{ color: '#000', fontWeight: 700 }}>{getFollowingCount(profile)}</span>
-              <span style={{ color: '#8e8e8e', fontSize: 14 }}> following</span>
+              <span style={{ color: '#000', fontSize: 14 }}> following</span>
             </button>
           </div>
 
@@ -195,7 +176,7 @@ export default function ProfilePage() {
             {profile.fullName && <p style={{ color: '#000', fontWeight: 600, fontSize: 14, margin: '0 0 2px' }}>{profile.fullName}</p>}
             {profile.bio && <p style={{ color: '#000', fontSize: 14, whiteSpace: 'pre-wrap', margin: '0 0 2px' }}>{profile.bio}</p>}
             {profile.website && (
-              <a href={profile.website} target="_blank" rel="noopener noreferrer" style={{ color: '#dc2743', fontSize: 14, fontWeight: 600 }}>
+              <a href={profile.website} target="_blank" rel="noopener noreferrer" style={{ color: '#0095f6', fontSize: 14 }}>
                 {profile.website}
               </a>
             )}
@@ -204,16 +185,12 @@ export default function ProfilePage() {
       </div>
 
       {/* Story Highlights */}
-      <div style={{
-        display: 'flex', gap: 22, marginBottom: 20, overflowX: 'auto',
-        backgroundColor: '#fff', borderRadius: 20, border: '1px solid #f2f2f2',
-        padding: '16px 20px',
-      }}>
+      <div style={{ display: 'flex', gap: 20, marginBottom: 24, overflowX: 'auto', paddingBottom: 4 }}>
         {/* New highlight button (own profile) */}
         {isOwn && (
           <button onClick={() => setShowNewHighlight(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0 }}>
-            <div style={{ width: 62, height: 62, borderRadius: '50%', border: '2px dashed #dc2743', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Plus size={22} color="#dc2743" />
+            <div style={{ width: 64, height: 64, borderRadius: '50%', border: '1px dashed #999', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Plus size={24} color="#000" />
             </div>
             <span style={{ color: '#000', fontSize: 12 }}>New</span>
           </button>
@@ -226,24 +203,19 @@ export default function ProfilePage() {
               onClick={() => {}}
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer' }}
             >
-              <div style={{
-                width: 62, height: 62, borderRadius: '50%', overflow: 'hidden', padding: 2,
-                background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
-              }}>
-                <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden', border: '2px solid #fff' }}>
-                  {h.cover ? (
-                    <img src={h.cover} alt={h.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <div style={{ width: '100%', height: '100%', backgroundColor: '#e5e5e5' }} />
-                  )}
-                </div>
+              <div style={{ width: 64, height: 64, borderRadius: '50%', border: '2px solid #dbdbdb', overflow: 'hidden' }}>
+                {h.cover ? (
+                  <img src={h.cover} alt={h.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', backgroundColor: '#e5e5e5' }} />
+                )}
               </div>
               <span style={{ color: '#000', fontSize: 12, maxWidth: 64, textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.name}</span>
             </button>
             {isOwn && (
               <button
                 onClick={() => deleteHighlight(h.id)}
-                style={{ position: 'absolute', top: -2, right: -2, background: '#fff', border: '1px solid #dbdbdb', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}
+                style={{ position: 'absolute', top: -2, right: -2, background: '#efefef', border: '1px solid #dbdbdb', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}
               >
                 <X size={10} color="#000" />
               </button>
@@ -253,10 +225,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div style={{
-        display: 'flex', gap: 6, backgroundColor: '#fff', borderRadius: 999,
-        border: '1px solid #f2f2f2', padding: 6, marginBottom: 16,
-      }}>
+      <div style={{ display: 'flex', borderTop: '1px solid #dbdbdb' }}>
         {[
           { key: 'posts' as Tab, icon: <Grid3X3 size={16} />, label: 'POSTS' },
           ...(isOwn ? [{ key: 'saved' as Tab, icon: <Bookmark size={16} />, label: 'SAVED' }] : []),
@@ -267,13 +236,14 @@ export default function ProfilePage() {
             onClick={() => setTab(t.key)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              flex: 1, padding: '10px 0', borderRadius: 999,
-              background: tab === t.key ? 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)' : 'transparent',
-              color: tab === t.key ? '#fff' : '#8e8e8e',
-              border: 'none',
+              flex: 1, padding: '12px 0',
+              borderTop: tab === t.key ? '1px solid #000' : '1px solid transparent',
+              color: tab === t.key ? '#000' : '#737373',
+              background: 'none', border: 'none',
+              borderTopWidth: 1, borderTopStyle: 'solid',
+              borderTopColor: tab === t.key ? '#000' : 'transparent',
               cursor: 'pointer',
-              fontSize: 11, fontWeight: 700, letterSpacing: 1,
-              transition: 'background 0.15s',
+              fontSize: 11, fontWeight: 600, letterSpacing: 1,
             }}
           >
             {t.icon}
@@ -286,16 +256,9 @@ export default function ProfilePage() {
       {postsLoading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '48px 0' }}><Spinner /></div>
       ) : posts.length === 0 ? (
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0', gap: 16,
-          backgroundColor: '#fff', borderRadius: 22, border: '1px solid #f2f2f2',
-        }}>
-          <div style={{
-            width: 60, height: 60, borderRadius: '50%',
-            background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <Camera size={26} color="#fff" />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0', gap: 16 }}>
+          <div style={{ width: 62, height: 62, borderRadius: '50%', border: '2px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Camera size={28} color="#000" />
           </div>
           <div style={{ textAlign: 'center' }}>
             <h3 style={{ color: '#000', fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>Share photos</h3>
@@ -303,11 +266,11 @@ export default function ProfilePage() {
           </div>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 3, marginTop: 3 }}>
           {posts.map(post => (
             <div
               key={post._id}
-              style={{ position: 'relative', aspectRatio: '1', cursor: 'pointer', overflow: 'hidden', borderRadius: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}
+              style={{ position: 'relative', aspectRatio: '1', cursor: 'pointer', overflow: 'hidden' }}
               onClick={() => setSelectedPost(post)}
               onMouseEnter={e => { (e.currentTarget.querySelector('.overlay') as HTMLElement)!.style.opacity = '1'; }}
               onMouseLeave={e => { (e.currentTarget.querySelector('.overlay') as HTMLElement)!.style.opacity = '0'; }}
@@ -452,12 +415,7 @@ function NewHighlightModal({ posts, onSave, onClose }: { posts: Post[]; onSave: 
         <button
           onClick={() => name.trim() && onSave({ id: Date.now().toString(), name: name.trim(), cover })}
           disabled={!name.trim()}
-          style={{
-            width: '100%',
-            background: name.trim() ? 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)' : '#f2b3ba',
-            color: '#fff', border: 'none', borderRadius: 999, padding: '10px 0', fontWeight: 700, fontSize: 14,
-            cursor: name.trim() ? 'pointer' : 'default',
-          }}
+          style={{ width: '100%', backgroundColor: name.trim() ? '#0095f6' : '#0095f680', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 0', fontWeight: 600, fontSize: 14, cursor: name.trim() ? 'pointer' : 'default' }}
         >
           Add
         </button>
@@ -539,11 +497,7 @@ function EditProfileModal({ isOpen, onClose, user, onUpdate }: { isOpen: boolean
         <button
           type="submit"
           disabled={loading}
-          style={{
-            width: '100%', background: 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)',
-            color: '#fff', border: 'none', borderRadius: 999, padding: '12px 0', fontWeight: 700, fontSize: 14,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: loading ? 0.6 : 1,
-          }}
+          style={{ width: '100%', backgroundColor: '#0095f6', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', fontWeight: 600, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: loading ? 0.6 : 1 }}
         >
           {loading ? <Spinner size="sm" /> : 'Save changes'}
         </button>
