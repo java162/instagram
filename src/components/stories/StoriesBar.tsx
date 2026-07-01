@@ -53,37 +53,55 @@ export default function StoriesBar() {
   };
 
   return (
-    <div className="relative px-4 py-4 border-b border-gray-200">
+    <div className="relative" style={{ padding: '14px 18px' }}>
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white border border-gray-200 rounded-full p-1 z-10 shadow-md hover:bg-gray-100"
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-10"
+          style={{
+            backgroundColor: '#fff', border: '1px solid #f0f0f0', borderRadius: '50%',
+            width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.12)', cursor: 'pointer',
+          }}
         >
-          <ChevronLeft size={16} className="text-black" />
+          <ChevronLeft size={15} className="text-black" />
         </button>
       )}
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border border-gray-200 rounded-full p-1 z-10 shadow-md hover:bg-gray-100"
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-10"
+          style={{
+            backgroundColor: '#fff', border: '1px solid #f0f0f0', borderRadius: '50%',
+            width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.12)', cursor: 'pointer',
+          }}
         >
-          <ChevronRight size={16} className="text-black" />
+          <ChevronRight size={15} className="text-black" />
         </button>
       )}
 
       <div
         ref={scrollRef}
-        className="flex gap-5 overflow-x-auto scrollbar-hide"
+        className="flex overflow-x-auto scrollbar-hide"
+        style={{ gap: 18 }}
         onScroll={checkScroll}
       >
         {/* Your story */}
         <div
-          className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer"
+          className="flex flex-col items-center flex-shrink-0 cursor-pointer"
+          style={{ gap: 6 }}
           onClick={() => !creatingStory && storyFileRef.current?.click()}
         >
-          <div className="relative">
+          <div className="relative" style={{ padding: 2, borderRadius: '50%', border: '2px dashed #e0b0be' }}>
             <Avatar src={user?.avatar} alt={user?.username} size="lg" />
-            <div className="absolute bottom-0 right-0 bg-blue-500 rounded-full w-5 h-5 flex items-center justify-center border-2 border-white">
+            <div
+              className="absolute bottom-0 right-0 flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
+                borderRadius: '50%', width: 20, height: 20, border: '2px solid #fff',
+              }}
+            >
               {creatingStory ? (
                 <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
               ) : (
@@ -105,7 +123,8 @@ export default function StoriesBar() {
         {groups.map((group, idx) => (
           <div
             key={group.user._id}
-            className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer"
+            className="flex flex-col items-center flex-shrink-0 cursor-pointer"
+            style={{ gap: 6 }}
             onClick={() => setSelectedGroup(idx)}
           >
             <Avatar

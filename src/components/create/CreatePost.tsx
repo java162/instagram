@@ -82,21 +82,34 @@ export default function CreatePost({ isOpen, onClose, onCreated }: CreatePostPro
     <Modal isOpen={isOpen} onClose={handleClose} maxWidth="max-w-2xl" title={step === 'select' ? 'Create new post' : 'New post'}>
       {step === 'select' && (
         <div
-          className={`flex flex-col items-center justify-center py-20 px-8 transition-colors ${dragging ? 'bg-blue-50' : ''}`}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            padding: '56px 32px', margin: 16, borderRadius: 24,
+            border: `2px dashed ${dragging ? '#dc2743' : '#e5e5e5'}`,
+            backgroundColor: dragging ? 'rgba(220,39,67,0.04)' : '#fafafa',
+            transition: 'all 0.15s',
+          }}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
           onDrop={handleDrop}
         >
-          <div className="flex gap-2 mb-6 text-black opacity-70">
-            <Image size={52} strokeWidth={1} />
-            <Video size={52} strokeWidth={1} />
+          <div style={{
+            width: 76, height: 76, borderRadius: 20, marginBottom: 20,
+            background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+            boxShadow: '0 10px 24px rgba(220,39,67,0.28)',
+          }}>
+            <Image size={26} color="#fff" strokeWidth={1.5} />
+            <Video size={26} color="#fff" strokeWidth={1.5} />
           </div>
-          <p className="text-black text-2xl font-light mb-8">Drag photos and videos here</p>
+          <p style={{ color: '#000', fontSize: 18, fontWeight: 600, marginBottom: 20 }}>Drag photos and videos here</p>
           <button
             onClick={() => fileRef.current?.click()}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#1877f2')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#0095f6')}
-            style={{ backgroundColor: '#0095f6', color: '#fff', padding: '10px 24px', borderRadius: 8, fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer' }}
+            style={{
+              background: 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)', color: '#fff',
+              padding: '11px 26px', borderRadius: 999, fontWeight: 700, fontSize: 14, border: 'none',
+              cursor: 'pointer', boxShadow: '0 6px 18px rgba(220,39,67,0.3)',
+            }}
           >
             Select From Computer
           </button>
@@ -114,24 +127,32 @@ export default function CreatePost({ isOpen, onClose, onCreated }: CreatePostPro
       {step === 'edit' && (
         <div>
           {/* Header: back + Share button */}
-          <div className="flex justify-between items-center px-4 py-2 border-b border-gray-200">
+          <div className="flex justify-between items-center" style={{ padding: '12px 16px', borderBottom: '1px solid #f2f2f2' }}>
             <button
               onClick={() => { setStep('select'); setFiles([]); setPreviews([]); }}
-              className="text-black"
+              style={{
+                width: 32, height: 32, borderRadius: '50%', background: '#f7f7f7', border: 'none',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#000',
+              }}
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
             </button>
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="text-blue-400 font-semibold text-sm disabled:opacity-40 flex items-center gap-2"
+              style={{
+                background: loading ? '#f2b3ba' : 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)',
+                color: '#fff', border: 'none', borderRadius: 999, padding: '8px 20px',
+                fontWeight: 700, fontSize: 13, cursor: loading ? 'default' : 'pointer',
+                display: 'flex', alignItems: 'center', gap: 8,
+              }}
             >
               {loading ? <Spinner size="sm" /> : 'Share'}
             </button>
           </div>
 
           {/* Image/video preview */}
-          <div className="relative bg-black" style={{ maxHeight: 340, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="relative bg-black" style={{ margin: '14px 16px 0', borderRadius: 18, maxHeight: 340, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {isVideo(previewIdx) ? (
               <video src={previews[previewIdx]} style={{ width: '100%', maxHeight: 340, objectFit: 'contain' }} controls />
             ) : (
@@ -170,27 +191,42 @@ export default function CreatePost({ isOpen, onClose, onCreated }: CreatePostPro
           </div>
 
           {/* Caption */}
-          <div className="p-4 border-b border-gray-200">
-            <textarea
-              value={caption}
-              onChange={e => setCaption(e.target.value)}
-              placeholder="Write a caption..."
-              maxLength={2200}
-              rows={4}
-              className="w-full bg-transparent text-black text-sm placeholder-gray-400 focus:outline-none resize-none"
-            />
-            <p className="text-gray-500 text-xs text-right">{caption.length}/2,200</p>
+          <div style={{ margin: '14px 16px 0' }}>
+            <div style={{
+              border: '1.5px solid #e5e5e5', borderRadius: 16, padding: '12px 14px',
+              transition: 'border-color 0.15s',
+            }}>
+              <textarea
+                value={caption}
+                onChange={e => setCaption(e.target.value)}
+                placeholder="Write a caption..."
+                maxLength={2200}
+                rows={3}
+                onFocus={e => (e.currentTarget.parentElement!.style.borderColor = '#dc2743')}
+                onBlur={e => (e.currentTarget.parentElement!.style.borderColor = '#e5e5e5')}
+                className="w-full bg-transparent text-black text-sm placeholder-gray-400 focus:outline-none resize-none"
+              />
+              <p className="text-right" style={{ color: '#8e8e8e', fontSize: 11, margin: '4px 0 0' }}>{caption.length}/2,200</p>
+            </div>
           </div>
 
           {/* Location */}
-          <div className="flex items-center gap-3 px-4 py-3">
-            <MapPin size={18} className="text-gray-500" />
-            <input
-              value={location}
-              onChange={e => setLocation(e.target.value)}
-              placeholder="Add location"
-              className="flex-1 bg-transparent text-black text-sm placeholder-gray-400 focus:outline-none"
-            />
+          <div style={{ margin: '10px 16px 16px' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              border: '1.5px solid #e5e5e5', borderRadius: 999, padding: '10px 16px',
+              transition: 'border-color 0.15s',
+            }}>
+              <MapPin size={17} className="text-gray-500" />
+              <input
+                value={location}
+                onChange={e => setLocation(e.target.value)}
+                placeholder="Add location"
+                onFocus={e => (e.currentTarget.parentElement!.style.borderColor = '#dc2743')}
+                onBlur={e => (e.currentTarget.parentElement!.style.borderColor = '#e5e5e5')}
+                className="flex-1 bg-transparent text-black text-sm placeholder-gray-400 focus:outline-none"
+              />
+            </div>
           </div>
         </div>
       )}

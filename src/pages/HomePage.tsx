@@ -90,10 +90,15 @@ export default function HomePage() {
   const isFeedEmpty = initialLoaded && posts.length === 0;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fafafa' }}>
       {/* Feed column */}
-      <div style={{ flex: 1, maxWidth: 470, margin: '0 auto' }}>
-        <StoriesBar />
+      <div style={{ flex: 1, maxWidth: 500, margin: '0 auto', padding: '20px 14px 20px' }}>
+        <div style={{
+          backgroundColor: '#fff', borderRadius: 22, border: '1px solid #f2f2f2',
+          boxShadow: '0 4px 18px rgba(0,0,0,0.05)', marginBottom: 20, padding: '4px 0',
+        }}>
+          <StoriesBar />
+        </div>
 
         {/* Real feed posts */}
         {posts.map(post => (
@@ -108,23 +113,30 @@ export default function HomePage() {
         {isFeedEmpty && (
           <>
             <div style={{
-              padding: '16px 16px 8px',
-              borderBottom: '1px solid #dbdbdb',
+              padding: '14px 18px',
+              marginBottom: 14,
+              backgroundColor: '#fff', borderRadius: 18, border: '1px solid #f2f2f2',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
               <span style={{ color: '#737373', fontSize: 14, fontWeight: 600 }}>Suggested for you</span>
-              <Link to="/explore" style={{ color: '#000', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
+              <Link to="/explore" style={{ color: '#dc2743', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
                 See all
               </Link>
             </div>
 
             {suggestedPosts.length === 0 && !loading && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 24px', color: '#737373' }}>
+              <div style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 24px', color: '#737373',
+                backgroundColor: '#fff', borderRadius: 22, border: '1px solid #f2f2f2',
+              }}>
                 <p style={{ fontSize: 16, fontWeight: 600, color: '#000', marginBottom: 8 }}>Welcome to Instagram</p>
                 <p style={{ fontSize: 14, textAlign: 'center', lineHeight: 1.5 }}>
                   Follow people to see their posts here.
                 </p>
-                <Link to="/explore" style={{ marginTop: 16, color: '#0095f6', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>
+                <Link to="/explore" style={{
+                  marginTop: 16, color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none',
+                  background: 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)', padding: '9px 20px', borderRadius: 999,
+                }}>
                   Explore →
                 </Link>
               </div>
@@ -152,66 +164,79 @@ export default function HomePage() {
       {/* Right sidebar — hidden on smaller screens */}
       <div
         className="hidden xl:block"
-        style={{ width: 320, flexShrink: 0, padding: '32px 16px 32px 32px' }}
+        style={{ width: 320, flexShrink: 0, padding: '20px 20px 32px 0' }}
       >
-        {user && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <Link to={`/${user.username}`}>
-                <Avatar src={user.avatar} alt={user.username} size="md" />
-              </Link>
-              <div>
-                <Link to={`/${user.username}`} style={{ color: '#000', fontSize: 14, fontWeight: 600, display: 'block', textDecoration: 'none' }}>
-                  {user.username}
+        <div style={{ position: 'sticky', top: 20 }}>
+          {user && (
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: 16, padding: 14, backgroundColor: '#fff', borderRadius: 18,
+              border: '1px solid #f2f2f2', boxShadow: '0 4px 14px rgba(0,0,0,0.04)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Link to={`/${user.username}`}>
+                  <Avatar src={user.avatar} alt={user.username} size="md" />
                 </Link>
-                <span style={{ color: '#737373', fontSize: 14 }}>{user.fullName}</span>
+                <div>
+                  <Link to={`/${user.username}`} style={{ color: '#000', fontSize: 14, fontWeight: 600, display: 'block', textDecoration: 'none' }}>
+                    {user.username}
+                  </Link>
+                  <span style={{ color: '#737373', fontSize: 14 }}>{user.fullName}</span>
+                </div>
+              </div>
+              <button style={{ color: '#dc2743', fontSize: 13, fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer' }}>
+                Switch
+              </button>
+            </div>
+          )}
+
+          {suggestions.length > 0 && (
+            <div style={{
+              padding: 16, backgroundColor: '#fff', borderRadius: 18,
+              border: '1px solid #f2f2f2', boxShadow: '0 4px 14px rgba(0,0,0,0.04)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <span style={{ color: '#737373', fontSize: 14, fontWeight: 600 }}>Suggested for you</span>
+                <Link to="/explore" style={{ color: '#dc2743', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
+                  See all
+                </Link>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {suggestions.map(s => (
+                  <div key={s._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <Link to={`/${s.username}`}>
+                        <Avatar src={s.avatar} alt={s.username} size="sm" />
+                      </Link>
+                      <div>
+                        <Link to={`/${s.username}`} style={{ color: '#000', fontSize: 13, fontWeight: 600, display: 'block', textDecoration: 'none' }}>
+                          {s.username}
+                        </Link>
+                        <span style={{ color: '#737373', fontSize: 12 }}>Suggested for you</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleFollow(s._id)}
+                      style={{
+                        color: following[s._id] ? '#000' : '#fff', fontSize: 12.5, fontWeight: 700,
+                        background: following[s._id] ? '#f0f0f0' : 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)',
+                        border: 'none', borderRadius: 999, padding: '6px 14px', cursor: 'pointer',
+                      }}
+                    >
+                      {following[s._id] ? 'Following' : 'Follow'}
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
-            <button style={{ color: '#0095f6', fontSize: 13, fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer' }}>
-              Switch
-            </button>
-          </div>
-        )}
+          )}
 
-        {suggestions.length > 0 && (
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <span style={{ color: '#737373', fontSize: 14, fontWeight: 600 }}>Suggested for you</span>
-              <Link to="/explore" style={{ color: '#000', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
-                See all
-              </Link>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {suggestions.map(s => (
-                <div key={s._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Link to={`/${s.username}`}>
-                      <Avatar src={s.avatar} alt={s.username} size="sm" />
-                    </Link>
-                    <div>
-                      <Link to={`/${s.username}`} style={{ color: '#000', fontSize: 13, fontWeight: 600, display: 'block', textDecoration: 'none' }}>
-                        {s.username}
-                      </Link>
-                      <span style={{ color: '#737373', fontSize: 12 }}>Suggested for you</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleFollow(s._id)}
-                    style={{ color: following[s._id] ? '#000' : '#0095f6', fontSize: 13, fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer' }}
-                  >
-                    {following[s._id] ? 'Following' : 'Follow'}
-                  </button>
-                </div>
-              ))}
-            </div>
+          <div style={{ marginTop: 24, padding: '0 4px' }}>
+            <p style={{ color: '#8e8e8e', fontSize: 11, lineHeight: 1.8 }}>
+              About · Help · Press · API · Jobs · Privacy · Terms · Locations · Language · Meta Verified
+            </p>
+            <p style={{ color: '#8e8e8e', fontSize: 11, marginTop: 6 }}>© 2026 INSTAGRAM FROM META</p>
           </div>
-        )}
-
-        <div style={{ marginTop: 32 }}>
-          <p style={{ color: '#555', fontSize: 11, lineHeight: 1.8 }}>
-            About · Help · Press · API · Jobs · Privacy · Terms · Locations · Language · Meta Verified
-          </p>
-          <p style={{ color: '#555', fontSize: 11, marginTop: 6 }}>© 2026 INSTAGRAM FROM META</p>
         </div>
       </div>
     </div>

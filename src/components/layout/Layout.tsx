@@ -8,7 +8,8 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const SIDEBAR_W = 245;
+// Sidebar now floats with a 16px margin on each side (see Sidebar.tsx: left/top/bottom 16, width 252)
+const SIDEBAR_W = 252 + 16 * 2;
 
 export default function Layout({ children }: LayoutProps) {
   const [showCreate, setShowCreate] = useState(false);
@@ -29,7 +30,7 @@ export default function Layout({ children }: LayoutProps) {
   }, []);
 
   return (
-    <div style={{ backgroundColor: '#fff', minHeight: '100vh', color: '#000' }}>
+    <div style={{ backgroundColor: '#fafafa', minHeight: '100vh', color: '#000' }}>
       <Sidebar
         unreadNotifications={unreadNotif}
         unreadMessages={unreadMsg}
@@ -43,9 +44,9 @@ export default function Layout({ children }: LayoutProps) {
           className="hidden md:block flex-shrink-0"
           style={{ width: SIDEBAR_W, minWidth: SIDEBAR_W }}
         />
-        {/* Main content — pb-16 for mobile nav clearance, removed on md+ */}
+        {/* Main content — extra bottom clearance for the floating mobile pill nav, removed on md+ */}
         <main
-          className="pb-16 md:pb-0"
+          className="pb-28 md:pb-0"
           style={{ flex: 1, minWidth: 0 }}
         >
           {children}
