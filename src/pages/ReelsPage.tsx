@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Volume2, VolumeX, ChevronUp, ChevronDown, Play } from 'lucide-react';
+import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Volume2, VolumeX, ChevronUp, ChevronDown, Play, X, Clapperboard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getExplore } from '../api/posts';
 import { toggleLike, toggleSave } from '../api/posts';
@@ -9,6 +9,22 @@ import Spinner from '../components/common/Spinner';
 import CommentModal from '../components/post/CommentModal';
 import { formatCount } from '../components/common/TimeAgo';
 import type { Post } from '../types';
+
+function GlassButton({ children, onClick, active }: { children: React.ReactNode; onClick?: () => void; active?: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        width: 42, height: 42, borderRadius: '50%', border: 'none', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        backgroundColor: active ? 'rgba(237,73,86,0.85)' : 'rgba(255,255,255,0.14)',
+        backdropFilter: 'blur(6px)', color: '#fff', transition: 'background-color 0.15s',
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function ReelsPage() {
   const [reels, setReels] = useState<Post[]>([]);
@@ -53,21 +69,50 @@ export default function ReelsPage() {
     return () => window.removeEventListener('keydown', handleKey);
   }, [currentIdx, reels.length]);
 
+  const pageBg = 'radial-gradient(circle at 15% 15%, #ffe3ec 0%, transparent 45%), radial-gradient(circle at 85% 20%, #e0ecff 0%, transparent 45%), radial-gradient(circle at 50% 95%, #f2e8ff 0%, transparent 50%), #fafafa';
+
   if (loading && reels.length === 0) {
-    return <div className="flex items-center justify-center h-screen"><Spinner /></div>;
+    return <div className="flex items-center justify-center h-screen" style={{ background: pageBg }}><Spinner /></div>;
   }
 
   if (reels.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen text-neutral-500">
+      <div className="flex items-center justify-center h-screen" style={{ background: pageBg, color: '#8e8e8e' }}>
         <p>No reels available</p>
       </div>
     );
   }
 
   return (
-    <div ref={containerRef} className="h-screen overflow-hidden flex items-center justify-center bg-black">
-      <div className="relative h-full max-h-screen" style={{ width: '420px' }}>
+    <div ref={containerRef} className="h-screen overflow-hidden flex items-center justify-center relative" style={{ background: pageBg }}>
+      {/* Decorative blobs */}
+      <div style={{ position: 'absolute', top: '-6%', left: '-6%', width: 280, height: 280, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(240,148,51,0.18), rgba(220,39,67,0.14))', filter: 'blur(10px)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '-8%', right: '-6%', width: 300, height: 300, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15))', filter: 'blur(10px)', pointerEvents: 'none' }} />
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, position: 'absolute', top: 22, left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}>
+        <Clapperboard size={18} color="#000" />
+        <span style={{ fontWeight: 700, fontSize: 15, color: '#000' }}>Reels</span>
+      </div>
+
+      <button
+        onClick={() => navigate('/')}
+        style={{
+          position: 'absolute', top: 20, right: 24, zIndex: 2,
+          width: 34, height: 34, borderRadius: '50%', border: '1px solid #dbdbdb',
+          background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        }}
+      >
+        <X size={16} color="#000" />
+      </button>
+
+      <div
+        className="relative"
+        style={{
+          width: 400, maxWidth: '90vw', height: '90vh', maxHeight: 840,
+          borderRadius: 32, overflow: 'hidden', backgroundColor: '#000',
+          boxShadow: '0 30px 70px rgba(0,0,0,0.28)', border: '6px solid #fff',
+        }}
+      >
         {reels[currentIdx] && (
           <ReelCard
             key={reels[currentIdx]._id}
@@ -79,34 +124,39 @@ export default function ReelsPage() {
         )}
       </div>
 
-      {/* Navigation buttons */}
-      <div style={{ position: 'absolute', right: 24, top: '50%', transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Navigation + progress */}
+      <div style={{ position: 'absolute', right: 'calc(50% - 260px)', top: '50%', transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, zIndex: 2 }}>
         <button
           onClick={goPrev}
           disabled={currentIdx === 0}
           style={{
-            backgroundColor: 'rgba(255,255,255,0.15)', border: 'none',
-            borderRadius: '50%', padding: 8, cursor: 'pointer', color: '#fff',
-            display: 'flex', opacity: currentIdx === 0 ? 0.3 : 1,
+            backgroundColor: '#fff', border: '1px solid #dbdbdb',
+            borderRadius: '50%', width: 38, height: 38, cursor: 'pointer', color: '#000',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: currentIdx === 0 ? 0.35 : 1,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
           }}
         >
-          <ChevronUp size={20} />
+          <ChevronUp size={18} />
         </button>
+        <span style={{ fontSize: 11, fontWeight: 600, color: '#8e8e8e', writingMode: 'vertical-rl' }}>
+          {currentIdx + 1} / {reels.length}
+        </span>
         <button
           onClick={goNext}
           disabled={currentIdx >= reels.length - 1}
           style={{
-            backgroundColor: 'rgba(255,255,255,0.15)', border: 'none',
-            borderRadius: '50%', padding: 8, cursor: 'pointer', color: '#fff',
-            display: 'flex', opacity: currentIdx >= reels.length - 1 ? 0.3 : 1,
+            backgroundColor: '#fff', border: '1px solid #dbdbdb',
+            borderRadius: '50%', width: 38, height: 38, cursor: 'pointer', color: '#000',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: currentIdx >= reels.length - 1 ? 0.35 : 1,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
           }}
         >
-          <ChevronDown size={20} />
+          <ChevronDown size={18} />
         </button>
       </div>
 
       {loading && reels.length > 0 && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2" style={{ zIndex: 2 }}>
           <Spinner size="sm" />
         </div>
       )}
@@ -195,7 +245,13 @@ function ReelCard({ post: initialPost, isActive, onNavigate, onUpdate }: ReelCar
         <div className="flex items-center gap-3 mb-3 cursor-pointer" onClick={() => onNavigate(`/${post.author.username}`)}>
           <Avatar src={post.author.avatar} alt={post.author.username} size="sm" />
           <span className="text-white font-semibold text-sm">{post.author.username}</span>
-          <button className="border border-white text-white text-xs px-3 py-0.5 rounded-full hover:bg-white/20 ml-1">
+          <button
+            style={{
+              border: 'none', color: '#fff', fontSize: 11, fontWeight: 700, padding: '4px 12px',
+              borderRadius: 999, marginLeft: 4, cursor: 'pointer',
+              background: 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)',
+            }}
+          >
             Follow
           </button>
         </div>
@@ -208,25 +264,31 @@ function ReelCard({ post: initialPost, isActive, onNavigate, onUpdate }: ReelCar
       </div>
 
       {/* Right action buttons */}
-      <div className="absolute right-4 bottom-20 flex flex-col items-center gap-5">
-        <button onClick={handleLike} className="flex flex-col items-center gap-1">
-          <Heart size={28} className={post.isLiked ? 'fill-red-500 text-red-500' : 'text-white'} />
+      <div className="absolute right-3 bottom-20 flex flex-col items-center gap-4">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+          <GlassButton onClick={handleLike} active={post.isLiked}>
+            <Heart size={19} className={post.isLiked ? 'fill-white text-white' : 'text-white'} />
+          </GlassButton>
           <span className="text-white text-xs font-semibold">{formatCount(post.likesCount)}</span>
-        </button>
-        <button onClick={() => setShowComments(true)} className="flex flex-col items-center gap-1">
-          <MessageCircle size={28} className="text-white" />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+          <GlassButton onClick={() => setShowComments(true)}>
+            <MessageCircle size={19} className="text-white" />
+          </GlassButton>
           <span className="text-white text-xs font-semibold">{formatCount(post.commentsCount)}</span>
-        </button>
-        <button onClick={handleShare} className="flex flex-col items-center gap-1">
-          <Send size={28} className="text-white" />
-        </button>
-        <button onClick={handleSave} className="flex flex-col items-center gap-1">
-          <Bookmark size={28} className={post.isSaved ? 'fill-white text-white' : 'text-white'} />
-        </button>
-        <button onClick={() => setMuted(!muted)} className="text-white">
-          {muted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-        </button>
-        <button className="text-white"><MoreHorizontal size={24} /></button>
+        </div>
+        <GlassButton onClick={handleShare}>
+          <Send size={19} className="text-white" />
+        </GlassButton>
+        <GlassButton onClick={handleSave} active={post.isSaved}>
+          <Bookmark size={19} className={post.isSaved ? 'fill-white text-white' : 'text-white'} />
+        </GlassButton>
+        <GlassButton onClick={() => setMuted(!muted)}>
+          {muted ? <VolumeX size={19} /> : <Volume2 size={19} />}
+        </GlassButton>
+        <GlassButton>
+          <MoreHorizontal size={19} />
+        </GlassButton>
       </div>
 
       <CommentModal
