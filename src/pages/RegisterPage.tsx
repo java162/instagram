@@ -1,25 +1,70 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { register } from '../api/auth';
 import { useAuthStore } from '../store/authStore';
 import Spinner from '../components/common/Spinner';
 
-const InstagramGradientIcon = () => (
-  <svg viewBox="0 0 48 48" className="w-14 h-14 mx-auto" fill="none">
-    <defs>
-      <linearGradient id="ig-grad2" x1="0" y1="48" x2="48" y2="0" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stopColor="#f09433" />
-        <stop offset="50%" stopColor="#dc2743" />
-        <stop offset="100%" stopColor="#bc1888" />
-      </linearGradient>
-    </defs>
-    <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#ig-grad2)" />
-    <rect x="6" y="6" width="36" height="36" rx="9" fill="none" stroke="white" strokeWidth="2.5" />
-    <circle cx="24" cy="24" r="9" fill="none" stroke="white" strokeWidth="2.5" />
-    <circle cx="34.5" cy="13.5" r="2.5" fill="white" />
-  </svg>
-);
+const ACCENT = '#5b3df0';
+
+function FloatingInput({ label, type = 'text', value, onChange, rightEl }: {
+  label: string; type?: string; value: string;
+  onChange: (v: string) => void; rightEl?: React.ReactNode;
+}) {
+  const [focused, setFocused] = useState(false);
+  const active = focused || value.length > 0;
+  return (
+    <div
+      style={{
+        position: 'relative',
+        border: `1.5px solid ${focused ? ACCENT : '#e5e5e5'}`,
+        borderRadius: 14,
+        padding: '18px 16px 6px',
+        transition: 'border-color 0.15s',
+        background: '#fff',
+      }}
+    >
+      <label
+        style={{
+          position: 'absolute',
+          left: 16,
+          top: active ? 7 : '50%',
+          transform: active ? 'translateY(0)' : 'translateY(-50%)',
+          fontSize: active ? 11 : 14,
+          color: focused ? ACCENT : '#8e8e8e',
+          fontWeight: active ? 600 : 400,
+          transition: 'all 0.15s',
+          pointerEvents: 'none',
+        }}
+      >
+        {label}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        style={{
+          width: '100%', border: 'none', outline: 'none', background: 'none',
+          color: '#000', fontSize: 15, paddingTop: 8, paddingBottom: 2,
+          paddingRight: rightEl ? 32 : 0, boxSizing: 'border-box',
+        }}
+      />
+      {rightEl && (
+        <div style={{ position: 'absolute', right: 14, top: '58%', transform: 'translateY(-50%)' }}>
+          {rightEl}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const FIELD_LABELS: Record<'email' | 'fullName' | 'username', string> = {
+  email: 'Email address',
+  fullName: 'Full name',
+  username: 'Username',
+};
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -29,8 +74,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(prev => ({ ...prev, [k]: e.target.value }));
+  const set = (k: keyof typeof form) => (v: string) => setForm(prev => ({ ...prev, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,53 +95,79 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-6">
-          <InstagramGradientIcon />
-          <h1 className="text-black text-2xl font-bold mt-4">Create your account</h1>
-          <p className="text-gray-500 text-sm mt-2">Sign up to see photos and videos from your friends.</p>
+    <div
+      style={{
+        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 20, position: 'relative', overflow: 'hidden',
+        background: 'radial-gradient(circle at 12% 20%, #e8e4ff 0%, transparent 45%), radial-gradient(circle at 88% 15%, #dcefff 0%, transparent 45%), radial-gradient(circle at 50% 95%, #ffe8f5 0%, transparent 50%), #faf9ff',
+      }}
+    >
+      <div style={{ position: 'absolute', top: '-6%', left: '-8%', width: 300, height: 300, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(91,61,240,0.2), rgba(59,130,246,0.15))', filter: 'blur(10px)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '-10%', right: '-6%', width: 320, height: 320, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(220,39,67,0.15), rgba(188,24,136,0.18))', filter: 'blur(10px)', pointerEvents: 'none' }} />
+
+      <div
+        style={{
+          width: '100%', maxWidth: 420, background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)',
+          borderRadius: 28, boxShadow: '0 20px 60px rgba(0,0,0,0.12)', border: '1px solid rgba(255,255,255,0.6)',
+          padding: '40px 32px', position: 'relative', zIndex: 1,
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+          <div
+            style={{
+              width: 64, height: 64, borderRadius: '50%', margin: '0 auto 16px',
+              background: `linear-gradient(135deg, ${ACCENT}, #8b5cf6, #3b82f6)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: `0 8px 24px ${ACCENT}55`,
+            }}
+          >
+            <UserPlus size={26} color="#fff" />
+          </div>
+          <h1 style={{ color: '#000', fontSize: 24, fontWeight: 800, margin: 0 }}>Create your account</h1>
+          <p style={{ color: '#8e8e8e', fontSize: 13, marginTop: 6 }}>Join to see photos and videos from friends</p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {(['email', 'fullName', 'username'] as const).map(k => (
-            <input
+            <FloatingInput
               key={k}
+              label={FIELD_LABELS[k]}
               type={k === 'email' ? 'email' : 'text'}
-              placeholder={k === 'fullName' ? 'Full name' : k.charAt(0).toUpperCase() + k.slice(1)}
               value={form[k]}
               onChange={set(k)}
-              style={{ width: '100%', backgroundColor: '#fafafa', border: '1px solid #dbdbdb', borderRadius: 10, padding: '12px 16px', color: '#000', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
             />
           ))}
-          <div style={{ position: 'relative' }}>
-            <input
-              type={showPass ? 'text' : 'password'}
-              placeholder="Password"
-              value={form.password}
-              onChange={set('password')}
-              style={{ width: '100%', backgroundColor: '#fafafa', border: '1px solid #dbdbdb', borderRadius: 10, padding: '12px 44px 12px 16px', color: '#000', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
-            />
-            <button type="button" onClick={() => setShowPass(!showPass)}
-              style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#737373', background: 'none', border: 'none', cursor: 'pointer' }}>
-              {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
+          <FloatingInput
+            label="Password"
+            type={showPass ? 'text' : 'password'}
+            value={form.password}
+            onChange={set('password')}
+            rightEl={
+              <button type="button" onClick={() => setShowPass(!showPass)} style={{ color: '#8e8e8e', cursor: 'pointer', background: 'none', border: 'none', padding: 0, display: 'flex' }}>
+                {showPass ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            }
+          />
 
-          {error && <p style={{ color: '#ed4956', fontSize: 13, textAlign: 'center' }}>{error}</p>}
+          {error && <p style={{ color: '#ed4956', fontSize: 13, textAlign: 'center', margin: 0 }}>{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            style={{ width: '100%', background: '#4B3FA7', color: '#fff', border: 'none', borderRadius: 10, padding: '13px 0', fontWeight: 700, fontSize: 14, cursor: loading ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: loading ? 0.7 : 1 }}
+            style={{
+              width: '100%', background: loading ? '#c9c2f7' : `linear-gradient(90deg, ${ACCENT}, #8b5cf6, #3b82f6)`,
+              color: '#fff', border: 'none', borderRadius: 999, padding: '13px 0', fontWeight: 700, fontSize: 15,
+              cursor: loading ? 'default' : 'pointer', marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              boxShadow: loading ? 'none' : `0 8px 20px ${ACCENT}44`,
+            }}
           >
             {loading ? <Spinner size="sm" /> : 'Sign up'}
           </button>
         </form>
 
-        <div className="text-center mt-6">
-          <span className="text-gray-500 text-sm">Have an account?{' '}</span>
-          <Link to="/login" className="text-[#0095f6] text-sm font-semibold hover:underline">Log in</Link>
+        <div style={{ textAlign: 'center', marginTop: 22 }}>
+          <span style={{ color: '#8e8e8e', fontSize: 13 }}>Already have an account?{' '}</span>
+          <Link to="/login" style={{ color: ACCENT, fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>Log in</Link>
         </div>
       </div>
     </div>

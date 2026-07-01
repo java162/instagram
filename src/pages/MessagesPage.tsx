@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, SquarePen, Search, ArrowLeft, ImageIcon, Smile, Mic, X, MessageCircleMore } from 'lucide-react';
+import { Send, SquarePen, Search, ArrowLeft, ImageIcon, Sticker as StickerIcon, Mic, MessageCircleMore, Play, Pause, Trash2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { getConversations, getMessages, sendMessage, startConversation } from '../api/messages';
 import { useAuthStore } from '../store/authStore';
@@ -8,11 +8,87 @@ import Spinner from '../components/common/Spinner';
 import TimeAgo from '../components/common/TimeAgo';
 import type { Conversation, Message } from '../types';
 
-const EMOJI_LIST = ['😀','😂','😍','🥰','😎','🤔','😢','😡','👍','👎','❤️','🔥','🎉','🙏','💯','✨','😊','🤣','😭','😏','😤','🥳','😴','🤗','💪','🎶','🌸','🍕','⭐','🚀'];
+const STICKER_CATEGORIES: Record<string, string[]> = {
+  Smileys: ['😀', '😂', '😍', '🥰', '😎', '🤔', '😢', '😡', '😭', '🤣', '😏', '😴'],
+  Hearts: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '💕', '💖', '💘', '💗'],
+  Gestures: ['👍', '👎', '🙏', '👏', '🤝', '✌️', '🤙', '💪', '🫶', '👋', '🤞', '🤟'],
+  Fun: ['🔥', '🎉', '✨', '💯', '🚀', '🌸', '🍕', '⭐', '🎶', '🥳', '🌈', '🎈'],
+};
+const STICKER_CATEGORY_NAMES = Object.keys(STICKER_CATEGORIES);
+const ALL_STICKERS = new Set(Object.values(STICKER_CATEGORIES).flat());
 
 function getBestAudioMime(): string {
   const types = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
   return types.find(t => MediaRecorder.isTypeSupported(t)) ?? 'audio/webm';
+}
+
+function VoiceBubble({ src, isMe }: { src: string; isMe: boolean }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const bars = useRef(Array.from({ length: 22 }, (_, i) => 6 + ((i * 37) % 16))).current;
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onTime = () => {
+      setCurrent(audio.currentTime);
+      if (audio.duration) setProgress(audio.currentTime / audio.duration);
+    };
+    const onLoaded = () => setDuration(audio.duration || 0);
+    const onEnd = () => { setPlaying(false); setProgress(0); setCurrent(0); };
+    audio.addEventListener('timeupdate', onTime);
+    audio.addEventListener('loadedmetadata', onLoaded);
+    audio.addEventListener('ended', onEnd);
+    return () => {
+      audio.removeEventListener('timeupdate', onTime);
+      audio.removeEventListener('loadedmetadata', onLoaded);
+      audio.removeEventListener('ended', onEnd);
+    };
+  }, []);
+
+  const toggle = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) { audio.pause(); setPlaying(false); }
+    else { audio.play(); setPlaying(true); }
+  };
+
+  const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  const shownTime = current > 0 ? current : duration;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, backgroundColor: isMe ? '#0095f6' : '#f0f0f0', borderRadius: 20, padding: '8px 12px', minWidth: 190 }}>
+      <button
+        type="button"
+        onClick={toggle}
+        style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', flexShrink: 0, cursor: 'pointer', backgroundColor: isMe ? 'rgba(255,255,255,0.25)' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        {playing
+          ? <Pause size={13} color={isMe ? '#fff' : '#000'} fill={isMe ? '#fff' : '#000'} />
+          : <Play size={13} color={isMe ? '#fff' : '#000'} fill={isMe ? '#fff' : '#000'} style={{ marginLeft: 2 }} />}
+      </button>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 2, height: 24 }}>
+        {bars.map((h, i) => {
+          const filled = i / bars.length <= progress;
+          return (
+            <div
+              key={i}
+              style={{
+                width: 2.5, height: h, borderRadius: 2,
+                backgroundColor: isMe ? (filled ? '#fff' : 'rgba(255,255,255,0.4)') : (filled ? '#0095f6' : '#c7c7c7'),
+                animation: playing ? `waveBar 0.8s ease-in-out ${i * 0.04}s infinite` : 'none',
+              }}
+            />
+          );
+        })}
+      </div>
+      <span style={{ fontSize: 11, color: isMe ? 'rgba(255,255,255,0.85)' : '#8e8e8e', flexShrink: 0 }}>{fmt(shownTime)}</span>
+      <audio ref={audioRef} src={src} style={{ display: 'none' }} />
+    </div>
+  );
 }
 
 export default function MessagesPage() {
@@ -28,7 +104,8 @@ export default function MessagesPage() {
   const [showChat, setShowChat] = useState(false); // mobile: show chat panel
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
-  const [showEmoji, setShowEmoji] = useState(false);
+  const [showStickers, setShowStickers] = useState(false);
+  const [stickerCategory, setStickerCategory] = useState(STICKER_CATEGORY_NAMES[0]);
   const [recording, setRecording] = useState(false);
   const [recordingSecs, setRecordingSecs] = useState(0);
   const [windowW, setWindowW] = useState(window.innerWidth);
@@ -139,14 +216,17 @@ export default function MessagesPage() {
     setText('');
     setMediaFile(null);
     setMediaPreview(null);
-    setShowEmoji(false);
+    setShowStickers(false);
     await doSend(t, f);
     setSending(false);
   };
 
-  const handleEmojiClick = (emoji: string) => {
-    setText(prev => prev + emoji);
-    setShowEmoji(false);
+  const handleStickerClick = async (sticker: string) => {
+    if (!selected || sending) return;
+    setShowStickers(false);
+    setSending(true);
+    await doSend(sticker);
+    setSending(false);
   };
 
   const startRecording = async () => {
@@ -326,6 +406,7 @@ export default function MessagesPage() {
                       msg.media.includes('.ogg') || msg.media.includes('.m4a') ||
                       msg.content === '🎤 Voice message'
                     );
+                    const isSticker = !msg.media && !!msg.content && ALL_STICKERS.has(msg.content.trim());
                     return (
                       <div key={msg._id || msg.createdAt} style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: 8 }}>
                         {!isMe && <Avatar src={msg.sender.avatar} alt={msg.sender.username ?? ''} size="xs" />}
@@ -334,14 +415,12 @@ export default function MessagesPage() {
                             <img src={msg.media} alt="media" style={{ maxWidth: 220, borderRadius: 18, display: 'block', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }} />
                           )}
                           {msg.media && isVoice && (
-                            <div style={{ backgroundColor: isMe ? '#0095f6' : '#f0f0f0', borderRadius: 20, padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <div style={{ width: 30, height: 30, borderRadius: '50%', backgroundColor: isMe ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <Mic size={15} color={isMe ? '#fff' : '#000'} />
-                              </div>
-                              <audio controls src={msg.media} style={{ height: 30, minWidth: 160 }} />
-                            </div>
+                            <VoiceBubble src={msg.media} isMe={isMe} />
                           )}
-                          {msg.content && msg.content !== '🎤 Voice message' && (
+                          {isSticker && (
+                            <div style={{ fontSize: 52, lineHeight: 1, padding: '2px 4px' }}>{msg.content}</div>
+                          )}
+                          {!isSticker && msg.content && msg.content !== '🎤 Voice message' && (
                             <div
                               style={{
                                 padding: '9px 14px', fontSize: 14,
@@ -372,18 +451,35 @@ export default function MessagesPage() {
                 </div>
               )}
 
-              {/* Emoji panel */}
-              {showEmoji && (
-                <div style={{ padding: '10px 20px', borderTop: '1px solid #efefef', backgroundColor: '#fafafa', flexShrink: 0 }}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {EMOJI_LIST.map(e => (
+              {/* Sticker panel */}
+              {showStickers && (
+                <div style={{ borderTop: '1px solid #efefef', backgroundColor: '#fafafa', flexShrink: 0 }}>
+                  <div style={{ display: 'flex', gap: 6, padding: '10px 20px 0', overflowX: 'auto' }}>
+                    {STICKER_CATEGORY_NAMES.map(cat => (
                       <button
-                        key={e}
-                        onClick={() => handleEmojiClick(e)}
+                        key={cat}
+                        onClick={() => setStickerCategory(cat)}
+                        style={{
+                          background: stickerCategory === cat ? '#0095f6' : '#fff',
+                          color: stickerCategory === cat ? '#fff' : '#8e8e8e',
+                          border: '1px solid ' + (stickerCategory === cat ? '#0095f6' : '#dbdbdb'),
+                          borderRadius: 999, padding: '5px 12px', fontSize: 12, fontWeight: 600,
+                          cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 4, padding: '12px 20px 16px' }}>
+                    {STICKER_CATEGORIES[stickerCategory].map(s => (
+                      <button
+                        key={s}
+                        onClick={() => handleStickerClick(s)}
                         onMouseEnter={el => (el.currentTarget.style.backgroundColor = '#eee')}
                         onMouseLeave={el => (el.currentTarget.style.backgroundColor = 'transparent')}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, padding: '2px 4px', borderRadius: 6, lineHeight: 1 }}
-                      >{e}</button>
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 30, padding: '6px 0', borderRadius: 10, lineHeight: 1 }}
+                      >{s}</button>
                     ))}
                   </div>
                 </div>
@@ -391,17 +487,25 @@ export default function MessagesPage() {
 
               {/* Recording */}
               {recording && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderTop: '1px solid #efefef', backgroundColor: '#fafafa', flexShrink: 0 }}>
-                  <button onClick={cancelRecording} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8e8e8e', display: 'flex' }}>
-                    <X size={22} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderTop: '1px solid #efefef', backgroundColor: '#fff6f6', flexShrink: 0 }}>
+                  <button onClick={cancelRecording} style={{ background: '#fff', border: '1px solid #f3c6c6', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Trash2 size={16} />
                   </button>
-                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#ef4444' }} />
-                    <span style={{ color: '#000', fontSize: 14 }}>Recording {fmtSecs(recordingSecs)}</span>
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                    <div style={{ position: 'relative', width: 12, height: 12, flexShrink: 0 }}>
+                      <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', backgroundColor: '#ef4444', animation: 'micPulse 1.2s ease-in-out infinite' }} />
+                      <div style={{ position: 'absolute', inset: 3, borderRadius: '50%', backgroundColor: '#ef4444' }} />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 2, height: 20, flex: 1, overflow: 'hidden' }}>
+                      {Array.from({ length: 20 }).map((_, i) => (
+                        <div key={i} style={{ width: 3, height: 6 + (i % 5) * 3, borderRadius: 2, backgroundColor: '#ef4444', animation: `waveBar 0.6s ease-in-out ${i * 0.05}s infinite`, flexShrink: 0 }} />
+                      ))}
+                    </div>
+                    <span style={{ color: '#000', fontSize: 14, fontWeight: 600, flexShrink: 0 }}>{fmtSecs(recordingSecs)}</span>
                   </div>
                   <button
                     onClick={stopRecording}
-                    style={{ backgroundColor: '#ef4444', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}
+                    style={{ backgroundColor: '#ef4444', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff', flexShrink: 0 }}
                   >
                     <Send size={18} />
                   </button>
@@ -427,10 +531,10 @@ export default function MessagesPage() {
                     <input ref={fileRef} type="file" accept="image/*,video/*" style={{ display: 'none' }} onChange={handleFileChange} />
                     <button
                       type="button"
-                      onClick={() => setShowEmoji(v => !v)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexShrink: 0, color: showEmoji ? '#0095f6' : '#8e8e8e', padding: 4 }}
+                      onClick={() => setShowStickers(v => !v)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexShrink: 0, color: showStickers ? '#0095f6' : '#8e8e8e', padding: 4 }}
                     >
-                      <Smile size={19} />
+                      <StickerIcon size={19} />
                     </button>
                     {text.trim() || mediaFile ? (
                       <button type="submit" disabled={sending} style={{ background: '#0095f6', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
