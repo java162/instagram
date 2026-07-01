@@ -2,18 +2,22 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, Search, Compass, Film, Send, Heart, PlusSquare,
-  Menu, LogOut, Settings, Bookmark, Activity, Moon,
+  Menu, LogOut, Settings, Bookmark, Activity, Moon, Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import Avatar from '../common/Avatar';
 import Modal from '../common/Modal';
 
 const IgIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" width={26} height={26} stroke="currentColor" strokeWidth={1.5} style={{ flexShrink: 0 }}>
-    <rect x="2" y="2" width="20" height="20" rx="5" />
-    <circle cx="12" cy="12" r="5" />
-    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-  </svg>
+  <div
+    style={{
+      width: 30, height: 30, borderRadius: 9, flexShrink: 0,
+      background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}
+  >
+    <Sparkles size={16} color="#fff" strokeWidth={2} />
+  </div>
 );
 
 interface SidebarProps {
@@ -58,21 +62,21 @@ export default function Sidebar({ unreadNotifications = 0, unreadMessages = 0, o
       <nav
         className="hidden md:flex"
         style={{
-          position: 'fixed', left: 0, top: 0, height: '100vh', width: 245,
+          position: 'fixed', left: 0, top: 0, height: '100vh', width: 254,
           backgroundColor: '#fff', borderRight: '1px solid #dbdbdb',
           zIndex: 40, flexDirection: 'column',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '8px 12px 16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '14px 14px 18px' }}>
           {/* Logo */}
           <Link
             to="/"
             onMouseEnter={() => setHoveredId('logo')}
             onMouseLeave={() => setHoveredId(null)}
             style={{
-              display: 'flex', alignItems: 'center', gap: 14,
-              padding: '16px 12px', marginBottom: 8,
-              borderRadius: 12,
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '14px 12px', marginBottom: 14,
+              borderRadius: 14,
               backgroundColor: itemBg('logo'),
               textDecoration: 'none',
               transition: 'background-color 0.15s',
@@ -81,7 +85,7 @@ export default function Sidebar({ unreadNotifications = 0, unreadMessages = 0, o
             <IgIcon />
             <span style={{
               fontFamily: "'Dancing Script', cursive",
-              fontSize: 28, color: '#000', lineHeight: 1,
+              fontSize: 27, color: '#000', lineHeight: 1,
               fontWeight: 700,
             }}>
               Instagram
@@ -89,7 +93,7 @@ export default function Sidebar({ unreadNotifications = 0, unreadMessages = 0, o
           </Link>
 
           {/* Nav items */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
             {navItems.map(({ id, label, Icon, path, badge, action }) => {
               const active = !!path && isActive(path);
               const fillable = id === 'home' || id === 'notifications';
@@ -100,8 +104,8 @@ export default function Sidebar({ unreadNotifications = 0, unreadMessages = 0, o
                   onMouseEnter={() => setHoveredId(id)}
                   onMouseLeave={() => setHoveredId(null)}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: 16,
-                    padding: '12px 12px', borderRadius: 12,
+                    display: 'flex', alignItems: 'center', gap: 14,
+                    padding: '11px 14px', borderRadius: 14,
                     backgroundColor: itemBg(id),
                     color: '#000', border: 'none', cursor: 'pointer',
                     width: '100%', textAlign: 'left',
@@ -137,8 +141,8 @@ export default function Sidebar({ unreadNotifications = 0, unreadMessages = 0, o
               onMouseEnter={() => setHoveredId('profile')}
               onMouseLeave={() => setHoveredId(null)}
               style={{
-                display: 'flex', alignItems: 'center', gap: 16,
-                padding: '12px 12px', borderRadius: 12,
+                display: 'flex', alignItems: 'center', gap: 14,
+                padding: '11px 14px', borderRadius: 14,
                 backgroundColor: itemBg('profile'),
                 color: '#000', textDecoration: 'none',
                 transition: 'background-color 0.15s',
@@ -160,11 +164,11 @@ export default function Sidebar({ unreadNotifications = 0, unreadMessages = 0, o
             onMouseEnter={() => setHoveredId('more')}
             onMouseLeave={() => setHoveredId(null)}
             style={{
-              display: 'flex', alignItems: 'center', gap: 16,
-              padding: '12px 12px', borderRadius: 12,
+              display: 'flex', alignItems: 'center', gap: 14,
+              padding: '11px 14px', borderRadius: 14,
               backgroundColor: itemBg('more'),
               color: '#000', border: 'none', cursor: 'pointer',
-              width: '100%', textAlign: 'left', marginTop: 4,
+              width: '100%', textAlign: 'left', marginTop: 6,
               transition: 'background-color 0.15s',
             }}
           >

@@ -8,7 +8,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const SIDEBAR_W = 245;
+const SIDEBAR_W = 254;
 
 export default function Layout({ children }: LayoutProps) {
   const [showCreate, setShowCreate] = useState(false);

@@ -81,33 +81,49 @@ export default function CreatePost({ isOpen, onClose, onCreated }: CreatePostPro
   return (
     <Modal isOpen={isOpen} onClose={handleClose} maxWidth="max-w-2xl" title={step === 'select' ? 'Create new post' : 'New post'}>
       {step === 'select' && (
-        <div
-          className={`flex flex-col items-center justify-center py-20 px-8 transition-colors ${dragging ? 'bg-blue-50' : ''}`}
-          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={handleDrop}
-        >
-          <div className="flex gap-2 mb-6 text-black opacity-70">
-            <Image size={52} strokeWidth={1} />
-            <Video size={52} strokeWidth={1} />
-          </div>
-          <p className="text-black text-2xl font-light mb-8">Drag photos and videos here</p>
-          <button
-            onClick={() => fileRef.current?.click()}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#1877f2')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#0095f6')}
-            style={{ backgroundColor: '#0095f6', color: '#fff', padding: '10px 24px', borderRadius: 8, fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer' }}
+        <div style={{ padding: 18 }}>
+          <div
+            style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              padding: '56px 32px', borderRadius: 20,
+              border: `1.5px dashed ${dragging ? '#dc2743' : '#dbdbdb'}`,
+              backgroundColor: dragging ? '#fff5f6' : '#fafafa',
+              transition: 'background-color 0.15s, border-color 0.15s',
+            }}
+            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={handleDrop}
           >
-            Select From Computer
-          </button>
-          <input
-            ref={fileRef}
-            type="file"
-            multiple
-            accept="image/*,video/*"
-            className="hidden"
-            onChange={handleFileInput}
-          />
+            <div
+              style={{
+                width: 68, height: 68, borderRadius: '50%', marginBottom: 20,
+                background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2,
+              }}
+            >
+              <Image size={22} color="#fff" strokeWidth={1.5} />
+              <Video size={22} color="#fff" strokeWidth={1.5} />
+            </div>
+            <p className="text-black text-lg font-light mb-6">Drag photos and videos here</p>
+            <button
+              onClick={() => fileRef.current?.click()}
+              style={{
+                background: 'linear-gradient(90deg, #f09433, #dc2743, #bc1888)',
+                color: '#fff', padding: '10px 26px', borderRadius: 999,
+                fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer',
+              }}
+            >
+              Select From Computer
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              multiple
+              accept="image/*,video/*"
+              className="hidden"
+              onChange={handleFileInput}
+            />
+          </div>
         </div>
       )}
 
@@ -170,7 +186,7 @@ export default function CreatePost({ isOpen, onClose, onCreated }: CreatePostPro
           </div>
 
           {/* Caption */}
-          <div className="p-4 border-b border-gray-200">
+          <div style={{ padding: '16px 18px', borderBottom: '1px solid #efefef' }}>
             <textarea
               value={caption}
               onChange={e => setCaption(e.target.value)}
@@ -183,8 +199,8 @@ export default function CreatePost({ isOpen, onClose, onCreated }: CreatePostPro
           </div>
 
           {/* Location */}
-          <div className="flex items-center gap-3 px-4 py-3">
-            <MapPin size={18} className="text-gray-500" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 18px' }}>
+            <MapPin size={17} className="text-gray-500" />
             <input
               value={location}
               onChange={e => setLocation(e.target.value)}

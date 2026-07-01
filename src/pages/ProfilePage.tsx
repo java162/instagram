@@ -458,9 +458,17 @@ function EditProfileModal({ isOpen, onClose, user, onUpdate }: { isOpen: boolean
       <form onSubmit={handleSubmit} style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
           <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => fileRef.current?.click()}>
-            <Avatar src={preview} alt={user.username} size="xl" />
-            <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Camera size={20} color="#fff" />
+            <div style={{ borderRadius: '50%', padding: 3, background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)' }}>
+              <Avatar src={preview} alt={user.username} size="xl" />
+            </div>
+            <div
+              style={{
+                position: 'absolute', bottom: -2, right: -2, width: 30, height: 30, borderRadius: '50%',
+                background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)', border: '2px solid #fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <Camera size={14} color="#fff" />
             </div>
           </div>
           <button type="button" onClick={() => fileRef.current?.click()} style={{ color: '#0095f6', fontSize: 14, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
