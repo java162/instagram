@@ -2,22 +2,27 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home, Search, Compass, Film, Send, Heart, PlusSquare,
-  Menu, LogOut, Settings, Bookmark, Activity, Moon, Sparkles,
+  Menu, LogOut, Settings, Bookmark, Activity, Moon,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import Avatar from '../common/Avatar';
 import Modal from '../common/Modal';
 
 const IgIcon = () => (
-  <div
-    style={{
-      width: 30, height: 30, borderRadius: 9, flexShrink: 0,
-      background: 'linear-gradient(135deg, #f09433, #dc2743, #bc1888)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-    }}
-  >
-    <Sparkles size={16} color="#fff" strokeWidth={2} />
-  </div>
+  <svg viewBox="0 0 48 48" width={30} height={30} style={{ flexShrink: 0 }}>
+    <defs>
+      <linearGradient id="ig-sidebar" x1="0" y1="48" x2="48" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#FED576" />
+        <stop offset="26%" stopColor="#F47133" />
+        <stop offset="61%" stopColor="#BC3081" />
+        <stop offset="100%" stopColor="#4F5BD5" />
+      </linearGradient>
+    </defs>
+    <rect width="48" height="48" rx="12" fill="url(#ig-sidebar)" />
+    <rect x="10" y="10" width="28" height="28" rx="9" fill="none" stroke="#fff" strokeWidth="3" />
+    <circle cx="24" cy="24" r="8" fill="none" stroke="#fff" strokeWidth="3" />
+    <circle cx="33" cy="15" r="2" fill="#fff" />
+  </svg>
 );
 
 interface SidebarProps {

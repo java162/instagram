@@ -47,9 +47,10 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
           <svg viewBox="0 0 48 48" className="w-16 h-16" fill="none">
             <defs>
               <linearGradient id="ig-load-grad" x1="0" y1="48" x2="48" y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#f09433" />
-                <stop offset="50%" stopColor="#dc2743" />
-                <stop offset="100%" stopColor="#bc1888" />
+                <stop offset="0%" stopColor="#FED576" />
+                <stop offset="26%" stopColor="#F47133" />
+                <stop offset="61%" stopColor="#BC3081" />
+                <stop offset="100%" stopColor="#4F5BD5" />
               </linearGradient>
             </defs>
             <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#ig-load-grad)" />
