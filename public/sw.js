@@ -1,5 +1,16 @@
-const CACHE_NAME = 'instahuma-pwa-v1'
-const APP_SHELL = ['/', '/manifest.webmanifest', '/favicon.svg', '/pwa-icon.svg', '/pwa-maskable-icon.svg']
+const CACHE_NAME = 'sardor-instagram-pwa-v2'
+const APP_SHELL = [
+  '/',
+  '/manifest.webmanifest',
+  '/favicon.svg',
+  '/apple-touch-icon.png',
+  '/pwa-icon.svg',
+  '/pwa-maskable-icon.svg',
+  '/pwa-icon-192.png',
+  '/pwa-icon-512.png',
+  '/pwa-maskable-icon-192.png',
+  '/pwa-maskable-icon-512.png',
+]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://adetal-ff-production.up.railway.app/api';
+
 const api = axios.create({
-  baseURL: 'https://adetal-ff-production.up.railway.app/api',
+  baseURL: API_BASE_URL,
   timeout: 15000,
 });
 
