@@ -35,3 +35,15 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
 }
+
+/* Voice recording mic pulse */
+@keyframes micPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.35; }
+}
+
+/* Voice message waveform bars */
+@keyframes waveBar {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
