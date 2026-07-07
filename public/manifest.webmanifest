@@ -1,14 +1,39 @@
 {
-  "name": "Instagram Clone",
-  "short_name": "Instagram",
-  "description": "A social photo sharing app experience.",
+  "name": "Sardor Instagram",
+  "short_name": "Sardor",
+  "description": "A mobile-ready social photo sharing app experience.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "icons": [
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-maskable-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "/pwa-icon.svg",
       "sizes": "192x192 512x512",
@@ -29,9 +54,9 @@
       "url": "/?create=post",
       "icons": [
         {
-          "src": "/pwa-icon.svg",
+          "src": "/pwa-icon-192.png",
           "sizes": "192x192",
-          "type": "image/svg+xml"
+          "type": "image/png"
         }
       ]
     }

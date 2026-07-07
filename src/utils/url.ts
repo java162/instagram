@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://adetal-ff-production.up.railway.app';
+export const BASE_URL = import.meta.env.VITE_ASSET_BASE_URL ?? 'https://adetal-ff-production.up.railway.app';
 
 export function fixUrl(url?: string): string | undefined {
   if (!url) return undefined;
